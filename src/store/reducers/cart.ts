@@ -1,41 +1,46 @@
-import { Restaurant, Pedido } from '../../pages/Home'
+// Recursos externos
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
+export interface CartItem {
+  id: number // Identificador único do item
+  foto: string
+  descricao: string
+  preco: number
+  nome: string
+  porcao: string
+}
+
 type CartState = {
-    items: Restaurant[]
-    pedido: Pedido[]
-    isOpen: boolean
+  items: CartItem[]
+  isOpen: boolean
 }
 
 const initialState: CartState = {
-    items: [],
-    pedido: [],
-    isOpen: false
+  items: [],
+  isOpen: false
 }
 
 const cartSlice = createSlice({
-    name: 'cart',
-    initialState,
-    reducers: {
-        addItem: (state, action: PayloadAction<Pedido>) => {
-            const p = state.pedido.find((pe) => pe.id === action.payload.id)
-            if (!p) {
-                state.pedido.push(action.payload)
-            } else {
-                alert('Pedido já está no carrinho')
-            }
-        },
-        removeItem: (state, action: PayloadAction<number>) => {
-            state.pedido = state.pedido.filter((p) => p.id !== action.payload)
-        },
-        open: (state) => {
-            state.isOpen = true
-        },
-        close: (state) => {
-            state.isOpen = false
-        }
+  name: 'cart',
+  initialState,
+  reducers: {
+    add: (state, action: PayloadAction<CartItem>) => {
+      state.items.push(action.payload)
+    },
+    open: (state) => {
+      state.isOpen = true
+    },
+    close: (state) => {
+      state.isOpen = false
+    },
+    remove: (state, action: PayloadAction<number>) => {
+      state.items = state.items.filter((item) => item.id !== action.payload)
+    },
+    clear: (state) => {
+      state.items = []
     }
+  }
 })
 
-export const { addItem, removeItem, open, close } = cartSlice.actions
+export const { add, open, close, remove, clear } = cartSlice.actions
 export default cartSlice.reducer
